@@ -1,0 +1,17 @@
+{
+    "name": "DrakesGames.Events.Editor",
+    "references": [
+        "GUID:1121ef7591639f64286777f6e46d34b4"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

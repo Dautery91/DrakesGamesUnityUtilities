@@ -3,13 +3,13 @@ using DrakesGames.Factory;
 using UnityEditor;
 using UnityEngine;
 
-namespace DrakesGames.Events.Editor
+namespace DrakesGames.Events.InspectorSupport.Editor
 {
     /// <summary>
     ///     Draws a string field with this attribute as a drop down containing all EventInfo types.  Could exted easily to
     ///     other types using the GenericFactory
     /// </summary>
-    [CustomPropertyDrawer(typeof(EventTypeAttribute))]
+    [CustomPropertyDrawer(typeof(EventType))]
     public class EventInfoPropertyDrawer : PropertyDrawer
     {
         public int index;
@@ -21,8 +21,6 @@ namespace DrakesGames.Events.Editor
 
             if (GenericFactory<EventInfoBase>.TypesByName != null)
                 eventInfoNames.AddRange(GenericFactory<EventInfoBase>.TypesByName.Keys);
-            else
-                Debug.LogError("No Event Info Base types found!");
 
             eventInfoNames.Sort();
 

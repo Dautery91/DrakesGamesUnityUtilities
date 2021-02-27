@@ -1,19 +1,19 @@
 ﻿using DrakesGames.Factory;
 using UnityEngine;
 
-namespace DrakesGames.Events.UnityEventIntegration
+namespace DrakesGames.Events.InspectorSupport
 {
     public class CustomEventsListener : MonoBehaviour
     {
-        private GOLocalEventManager localEM;
+        private LocalEventManager localEM;
 
         private void Awake()
         {
             if (useLocalEvents && localEM == null)
             {
-                localEM = GetComponent<GOLocalEventManager>();
-                if (localEM == null) localEM = GetComponentInParent<GOLocalEventManager>();
-                if (localEM == null) localEM = GetComponentInChildren<GOLocalEventManager>();
+                localEM = GetComponent<LocalEventManager>();
+                if (localEM == null) localEM = GetComponentInParent<LocalEventManager>();
+                if (localEM == null) localEM = GetComponentInChildren<LocalEventManager>();
             }
         }
 
@@ -21,7 +21,7 @@ namespace DrakesGames.Events.UnityEventIntegration
         {
             if (useGlobalEvents)
                 foreach (var mapping in eventListenerMappings)
-                    EventManager.Instance.RegisterByString(mapping.Listeners, mapping.eventType);
+                    EventManager.Instance.RegisterThroughUnityEvent(mapping.Listeners, mapping.eventType);
 
             if (useLocalEvents)
                 foreach (var mapping in localEventListenerMappings)
@@ -32,7 +32,7 @@ namespace DrakesGames.Events.UnityEventIntegration
         {
             if (useGlobalEvents && EventManager.Instance != null)
                 foreach (var mapping in eventListenerMappings)
-                    EventManager.Instance.UnregisterByString(mapping.Listeners, mapping.eventType);
+                    EventManager.Instance.UnregisterThroughUnityEvent(mapping.Listeners, mapping.eventType);
 
             if (useLocalEvents && localEM != null) localEM.UnregisterLocalListener(this);
         }

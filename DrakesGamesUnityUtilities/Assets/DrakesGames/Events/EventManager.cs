@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DrakesGames.Events.UnityEventIntegration;
+using DrakesGames.Events.InspectorSupport;
 using DrakesGames.Factory;
 using UnityEngine;
 
@@ -11,6 +11,8 @@ namespace DrakesGames.Events
 {
     public class EventManager : MonoBehaviour
     {
+        #region Fields and Properties
+        
         private static EventManager _instance;
         private Dictionary<Type, List<Tuple<MethodInfo, object>>> globalEventListeners;
 
@@ -20,32 +22,30 @@ namespace DrakesGames.Events
         private Dictionary<Type, List<UnityEventEventInfo>> unityEventListeners;
         private readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
 
+        // Note that any attempt to access the event manager before init will cause a null ref exception.  You must ensure
+        // the event manager is initialized before your listeners try to register themselves. Try loading initializing 
+        // the EM in a boot scene and/or setting the script execution order to execute before your other scripts
         public static EventManager Instance
         {
             get
             {
                 if (_instance == null) _instance = FindObjectOfType<EventManager>();
-
+                if (_instance == null)
+                    Debug.LogWarning("Event Manager has not yet been initialized.  You need to ensure it is fully set up" +
+                                     "before accessing");
+                
                 return _instance;
             }
         }
-
-        private void Awake()
-        {
-            ReflectListenerClasses();
-        }
-
-        private void OnEnable()
-        {
-            _instance = this;
-        }
-
+        
+        #endregion
         private IEnumerator WaitForFinishLoading()
         {
             yield return waitForEndOfFrame;
             _instance = FindObjectOfType<EventManager>();
         }
 
+        #region Public Methods
         /// <summary>
         ///     Registers all of the calling class' methods who have been tagged with the proper EventListener attributes as
         ///     listeners
@@ -100,7 +100,7 @@ namespace DrakesGames.Events
             }
         }
 
-        public void RegisterByString(UnityEventEventInfo unityEvent, string eventTypeString)
+        public void RegisterThroughUnityEvent(UnityEventEventInfo unityEvent, string eventTypeString)
         {
             var parameterType = GenericFactory<EventInfoBase>.GetFactoryObjectType(eventTypeString);
 
@@ -112,7 +112,7 @@ namespace DrakesGames.Events
             unityEventListeners[parameterType].Add(unityEvent);
         }
 
-        public void UnregisterByString(UnityEventEventInfo unityEvent, string eventTypeString)
+        public void UnregisterThroughUnityEvent(UnityEventEventInfo unityEvent, string eventTypeString)
         {
             var parameterType = GenericFactory<EventInfoBase>.GetFactoryObjectType(eventTypeString);
             if (!unityEventListeners.ContainsKey(parameterType) || unityEventListeners[parameterType] == null) return;
@@ -131,6 +131,8 @@ namespace DrakesGames.Events
             StartCoroutine(FireEventRoutine(eventInfo, trueEventInfoClass));
         }
 
+        #endregion
+        
         private IEnumerator FireEventRoutine(EventInfoBase eventInfo, Type trueEventInfoClass)
         {
             var param = new object[1] {eventInfo};
@@ -147,7 +149,18 @@ namespace DrakesGames.Events
             yield return null;
         }
 
-        // Maps and stores each listener type's listener methods once on Awake for more efficient use
+        #region Manager Initialization
+
+        private void Awake()
+        {
+            ReflectListenerClasses();
+        }
+
+        private void OnEnable()
+        {
+            _instance = this;
+        }
+        
         private void ReflectListenerClasses()
         {
             typeToMethods = new Dictionary<Type, List<MethodInfo>>();
@@ -170,5 +183,8 @@ namespace DrakesGames.Events
                 typeToMethods[t].Add(mi);
             }
         }
+
+        #endregion
+
     }
 }

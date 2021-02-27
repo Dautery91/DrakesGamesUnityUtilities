@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using DrakesGames.Events.UnityEventIntegration;
+using DrakesGames.Events.InspectorSupport;
 using DrakesGames.Factory;
 using UnityEngine;
 
 namespace DrakesGames.Events
 {
     /// <summary>
-    ///     This class makes it easier to tie together componenets that need to reference each other
-    ///     ON THE SAME GAME OBJECT.  This is not a typical event manager / singleton pattern, though the code is
-    ///     very similar.  The key is that outside classes should not access it
+    ///     Local event manager / messaging system.  Functions very similarly to the "EventManager" singleton class,
+    /// but can be instanced / referenced locally instead of globally via a singleton.  Common use case is to use this to
+    /// message across multiple components within one game "entity" like a character.  
     /// </summary>
-    public class GOLocalEventManager : MonoBehaviour
+    public class LocalEventManager : MonoBehaviour
     {
         private Dictionary<Type, List<LocalEventListener>> eventListeners;
         private Dictionary<object, Dictionary<Type, List<LocalEventListener>>> instanceEventListeners;

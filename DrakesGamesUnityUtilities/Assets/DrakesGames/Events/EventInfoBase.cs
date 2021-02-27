@@ -1,5 +1,4 @@
 ﻿using DrakesGames.Factory;
-using UnityEngine;
 
 namespace DrakesGames.Events
 {
@@ -10,9 +9,5 @@ namespace DrakesGames.Events
     public abstract class EventInfoBase : FactoryObjectBase
     {
         public string EventDescription = "Default";
-    }
-
-    public class EventTypeAttribute : PropertyAttribute
-    {
     }
 }

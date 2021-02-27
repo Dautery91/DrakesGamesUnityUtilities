@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DrakesGames.Events.UnityEventIntegration
+namespace DrakesGames.Events.InspectorSupport
 {
     [Serializable]
     public struct CustomEventToUnityEvent
